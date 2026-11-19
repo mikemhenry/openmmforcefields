@@ -59,7 +59,7 @@ setup(
         "openff-interchange >=0.4",
         "openff-toolkit >=0.16.1",
         "openff-units >=0.2",
-        "openmm >=8.5.1",
+        "openmm >=8.1.2",
         "pyyaml",
         "tinydb",
         "validators",
