@@ -74,6 +74,9 @@ class TemplateGeneratorBaseCase(unittest.TestCase):
 
         return random.sample(molecules, min(len(molecules), max_molecules))
 
+    def _make_template_generator(self, **kwargs):
+        return self.TEMPLATE_GENERATOR(**kwargs)
+
     def _filter_openff(self, force_field: str) -> bool:
         """
         Return True only for Parsley and force fields among SMIRNOFF force fields.
@@ -102,7 +105,12 @@ class TemplateGeneratorBaseCase(unittest.TestCase):
             return False
 
         # Older force fields require AM1-BCC, which NAGL cannot provide by name.
-        if "ToolkitAM1BCC" in OFFForceField(force_field).registered_parameter_handlers:
+        offxml = (
+            force_field
+            if force_field.endswith(".offxml")
+            else f"{force_field}.offxml"
+        )
+        if "ToolkitAM1BCC" in OFFForceField(offxml).registered_parameter_handlers:
             if not (
                 AmberToolsToolkitWrapper.is_available()
                 or OpenEyeToolkitWrapper.is_available()
@@ -230,7 +238,7 @@ class TemplateGeneratorBaseCase(unittest.TestCase):
         """
 
         # Set up the generator.
-        generator = self.TEMPLATE_GENERATOR()
+        generator = self._make_template_generator()
         forcefield = ForceField()
         forcefield.registerTemplateGenerator(generator.generator)
 
@@ -944,6 +952,12 @@ class TestGAFFTemplateGenerator(TemplateGeneratorBaseCase):
 
 class TestSMIRNOFFTemplateGenerator(TemplateGeneratorBaseCase):
     TEMPLATE_GENERATOR = SMIRNOFFTemplateGenerator
+
+    def _make_template_generator(self, **kwargs):
+        return SMIRNOFFTemplateGenerator(
+            forcefield="openff-2.3.0",
+            **kwargs,
+        )
 
     def test_INSTALLED_FORCEFIELDS(self):
         """Test INSTALLED_FORCEFIELDS contains expected force fields"""
