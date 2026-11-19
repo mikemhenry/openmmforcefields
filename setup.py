@@ -1,5 +1,5 @@
 """
-openmmforcefields
+OpenMMForceFields
 Additional force fields for OpenMM.
 """
 
@@ -18,21 +18,21 @@ with open("README.md") as handle:
 
 setup(
     # Self-descriptive entries which should always be present
-    name="openmmforcefields",
+    name="mike-OpenMMForceFields",
     author="Chodera lab // MSKCC",
     author_email="john.chodera@choderalab.org",
     description=short_description[0],
     long_description=long_description,
     long_description_content_type="text/markdown",
     keywords="molecular mechanics, forcefield, OpenMM, AMBER, CHARMM, GAFF",
-    url="http://github.com/choderalab/openmm-forcefields",
+    url="https://github.com/openmm/openmmforcefields",
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     license="MIT",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Utilities",
-        "License :: OSI Approved :: MIT",
+        "License :: OSI Approved :: MIT License",
     ],
     # Don't install as an egg, since OpenMM can't find ffxml files if we do
     zip_safe=False,
@@ -53,4 +53,24 @@ setup(
         ],
     },
     package_data={"openmmforcefields": ["ffxml/amber/*.xml", "ffxml/amber/gaff/*.{xml,dat}", "ffxml/charmm/*.xml"]},
+    install_requires=[
+        "lxml",
+        "numpy",
+        "openff-interchange >=0.4",
+        "openff-toolkit >=0.16.1",
+        "openff-units >=0.2",
+        "openmm >=8.5.1",
+        "pyyaml",
+        "tinydb",
+        "validators",
+        "parmed", # might not need in this pass
+        ],
+    extras_require = {
+        'test':  [
+            "pytest",
+            "pytest-cov",
+            "pytest-randomly",
+            "pytest-xdist",
+            ],
+        },
 )
