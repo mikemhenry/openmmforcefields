@@ -165,7 +165,7 @@ class TestSystemGenerator:
     def test_barostat(self, barostat_class, args):
         """Test that different barostats are correctly applied to the system"""
         # Create a protein SystemGenerator
-        generator = SystemGenerator(forcefields=self.amber_forcefields)
+        generator = SystemGenerator(forcefields=self.amber_forcefields, small_molecule_forcefield="openff-2.3.0")
 
         # Create the barostat
         generator.barostat = barostat_class(*args)
@@ -225,7 +225,7 @@ class TestSystemGenerator:
         "small_molecule_forcefield",
         [
             pytest.param("gaff-2.2.20", marks=pytest.mark.gaff),
-            "openff-2.0.0",
+            "openff-2.3.0",
             pytest.param("espaloma-0.3.2", marks=pytest.mark.espaloma),
         ],
     )
@@ -259,7 +259,7 @@ class TestSystemGenerator:
         "small_molecule_forcefield",
         [
             pytest.param("gaff-2.2.20", marks=pytest.mark.gaff),
-            "openff-2.0.0",
+            "openff-2.3.0",
             pytest.param("espaloma-0.3.2", marks=pytest.mark.espaloma),
         ],
     )
@@ -306,7 +306,7 @@ class TestSystemGenerator:
         "small_molecule_forcefield",
         [
             pytest.param("gaff-2.2.20", marks=pytest.mark.gaff),
-            "openff-2.0.0",
+            "openff-2.3.0",
             pytest.param("espaloma-0.3.2", marks=pytest.mark.espaloma),
         ],
     )
@@ -361,7 +361,7 @@ class TestSystemGenerator:
         "small_molecule_forcefield",
         [
             pytest.param("gaff-2.2.20", marks=pytest.mark.gaff),
-            "openff-2.0.0",
+            "openff-2.3.0",
             pytest.param("espaloma-0.3.2", marks=pytest.mark.espaloma),
         ],
     )
@@ -394,7 +394,7 @@ class TestSystemGenerator:
         "small_molecule_forcefield",
         [
             pytest.param("gaff-2.2.20", marks=pytest.mark.gaff),
-            "openff-2.0.0",
+            "openff-2.3.0",
             pytest.param("espaloma-0.3.2", marks=pytest.mark.espaloma),
         ],
     )
@@ -419,7 +419,7 @@ class TestSystemGenerator:
         "small_molecule_forcefield",
         [
             pytest.param("gaff-2.2.20", marks=pytest.mark.gaff),
-            "openff-2.0.0",
+            "openff-2.3.0",
             pytest.param("espaloma-0.3.2", marks=pytest.mark.espaloma),
         ],
     )
@@ -454,7 +454,7 @@ class TestSystemGenerator:
         "small_molecule_forcefield",
         [
             pytest.param("gaff-2.2.20", marks=pytest.mark.gaff),
-            "openff-2.0.0",
+            "openff-2.3.0",
             pytest.param("espaloma-0.3.2", marks=pytest.mark.espaloma),
         ],
     )
@@ -498,7 +498,7 @@ class TestSystemGenerator:
             # Add molecules for each test system separately
             for name, testsystem in test_systems.items():
                 molecules = testsystem["molecules"]
-                # We don't need to add molecules that are already defined in the cache
+                generator.add_molecules(molecules)
 
                 # Parameterize molecules
                 for molecule in molecules:
@@ -525,7 +525,12 @@ class TestSystemGenerator:
             )
 
             # Create a system in vacuum
-            generator = SystemGenerator(forcefields=self.amber_forcefields, molecules=molecules, cache=cache)
+            generator = SystemGenerator(
+                forcefields=self.amber_forcefields,
+                small_molecule_forcefield="openff-2.3.0",
+                molecules=molecules,
+                cache=cache,
+            )
             system = generator.create_system(openmm_topology)
             assert system.getNumParticles() == len(complex_structure.atoms)
 

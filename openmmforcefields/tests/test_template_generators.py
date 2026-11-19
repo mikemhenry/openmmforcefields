@@ -12,6 +12,7 @@ import numpy as np
 import openmm
 import pytest
 from openff.toolkit import Molecule, ForceField as OFFForceField
+from openff.toolkit import AmberToolsToolkitWrapper, OpenEyeToolkitWrapper
 from openff.units import unit as OFFUnit
 from openmm.app import PME, ForceField, Modeller, NoCutoff, PDBFile
 
@@ -99,6 +100,14 @@ class TemplateGeneratorBaseCase(unittest.TestCase):
         # it's not so relevant today so skip over it in testing, though users can access it
         if "smirnoff99" in force_field:
             return False
+
+        # Older force fields require AM1-BCC, which NAGL cannot provide by name.
+        if "ToolkitAM1BCC" in OFFForceField(force_field).registered_parameter_handlers:
+            if not (
+                AmberToolsToolkitWrapper.is_available()
+                or OpenEyeToolkitWrapper.is_available()
+            ):
+                return False
 
         return True
 
@@ -940,7 +949,7 @@ class TestSMIRNOFFTemplateGenerator(TemplateGeneratorBaseCase):
         """Test INSTALLED_FORCEFIELDS contains expected force fields"""
         expected_force_fields = [
             "openff-1.1.0",
-            "openff-2.0.0",
+            "openff-2.3.0",
         ]
         forbidden_force_fields = [
             "openff_unconstrained",
@@ -1038,7 +1047,7 @@ class TestSMIRNOFFTemplateGenerator(TemplateGeneratorBaseCase):
         the template generator.
         """
 
-        custom_sage = OFFForceField("openff-2.0.0.offxml")
+        custom_sage = OFFForceField("openff-2.3.0.offxml")
         # Create a simple molecule with one bond type
         ethane = Molecule.from_smiles("C")
         # Label ethane to get the bond type (not hard coded incase this changes in future)
@@ -1073,7 +1082,7 @@ class TestSMIRNOFFTemplateGenerator(TemplateGeneratorBaseCase):
         """
         Make sure we can read lj14scale and coulomb14scale from the SMIRNOFF force field
         """
-        custom_sage = OFFForceField("openff-2.0.0.offxml")
+        custom_sage = OFFForceField("openff-2.3.0.offxml")
         custom_sage.get_parameter_handler("vdW").scale14 = 0.0
         custom_sage.get_parameter_handler("Electrostatics").scale14 = 0.0
         # Create a simplest 1-4 bond molecule
