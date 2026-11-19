@@ -5,7 +5,6 @@ Additional force fields for OpenMM.
 
 import sys
 from setuptools import setup, find_packages
-import versioneer
 
 short_description = __doc__.split("\n")
 
@@ -26,8 +25,7 @@ setup(
     long_description_content_type="text/markdown",
     keywords="molecular mechanics, forcefield, OpenMM, AMBER, CHARMM, GAFF",
     url="https://github.com/openmm/openmmforcefields",
-    version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass(),
+    version=0.15.1,
     license="MIT",
     classifiers=[
         "Development Status :: 3 - Alpha",

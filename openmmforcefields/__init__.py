@@ -2,6 +2,4 @@
 # Handle versioneer
 from openmmforcefields.utils import get_ffxml_path
 
-from . import _version
-
-__version__ = _version.get_versions()["version"]
+__version__ = "0.15.1"
